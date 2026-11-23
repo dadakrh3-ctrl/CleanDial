@@ -27,7 +27,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -139,7 +138,7 @@ private fun TopNavigation(selected: Int, onSelect: (Int) -> Unit) {
     Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp).clip(RoundedCornerShape(18.dp)).background(Surface1).padding(5.dp), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
         listOf("Phone", "Messages").forEachIndexed { i, label ->
             Row(Modifier.weight(1f).clip(RoundedCornerShape(14.dp)).background(if (selected == i) Surface2 else Color.Transparent).clickable { onSelect(i) }.padding(vertical = 13.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                Icon(if (i == 0) Icons.Filled.Call else Icons.Filled.Message, null, tint = if (selected == i) Accent else TextDim, modifier = Modifier.size(18.dp))
+                Icon(if (i == 0) Icons.Filled.Call else Icons.Filled.Send, null, tint = if (selected == i) Accent else TextDim, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(8.dp)); Text(label, color = if (selected == i) TextMain else TextDim, fontWeight = FontWeight.SemiBold)
             }
         }
@@ -188,7 +187,7 @@ private fun InboxScreen(refreshKey: Int, onOpen: (SmsThread) -> Unit, onCompose:
     val ctx = LocalContext.current; val granted = isDefaultSms(ctx) || hasPerm(ctx, Manifest.permission.READ_SMS)
     val threads = remember(refreshKey, granted) { if (granted) loadSmsThreads(ctx) else emptyList() }
     Column(Modifier.fillMaxSize().padding(horizontal = 20.dp)) {
-        Row(Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) { Text("Messages", Modifier.weight(1f), color = TextMain, fontSize = 30.sp, fontWeight = FontWeight.Light); Button(onClick = onCompose, colors = ButtonDefaults.buttonColors(containerColor = Accent, contentColor = Bg)) { Icon(Icons.Filled.Message, null); Spacer(Modifier.width(6.dp)); Text("New") } }
+        Row(Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) { Text("Messages", Modifier.weight(1f), color = TextMain, fontSize = 30.sp, fontWeight = FontWeight.Light); Button(onClick = onCompose, colors = ButtonDefaults.buttonColors(containerColor = Accent, contentColor = Bg)) { Icon(Icons.Filled.Send, null); Spacer(Modifier.width(6.dp)); Text("New") } }
         if (!granted) Text("Set Clean Dialer as your default SMS app to manage your inbox, receive texts, and send directly.", color = TextDim)
         else if (threads.isEmpty()) Text("Your conversations will appear here.", color = TextDim)
         LazyColumn { items(threads) { t -> Row(Modifier.fillMaxWidth().clickable { onOpen(t) }.padding(vertical = 14.dp), verticalAlignment = Alignment.CenterVertically) { Box(Modifier.size(46.dp).clip(CircleShape).background(Surface2), contentAlignment = Alignment.Center) { Text(t.address.take(1).uppercase(), color = Accent, fontWeight = FontWeight.Bold) }; Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(t.address, color = TextMain, fontWeight = FontWeight.SemiBold); Text(t.snippet, color = TextDim, maxLines = 1, fontSize = 13.sp) }; Text(DateUtils.getRelativeTimeSpanString(t.date, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS).toString(), color = TextDim, fontSize = 11.sp) } } }
