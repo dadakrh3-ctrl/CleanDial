@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_MMS" />
+    <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    <application android:allowBackup="true" android:icon="@drawable/ic_launcher" android:label="Clean Dialer" android:theme="@android:style/Theme.Material.NoActionBar">
+        <activity android:name=".MainActivity" android:exported="true" android:windowSoftInputMode="adjustResize">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+            <intent-filter><action android:name="android.intent.action.DIAL"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.BROWSABLE"/><data android:scheme="tel"/></intent-filter>
+            <intent-filter><action android:name="android.intent.action.SENDTO"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.BROWSABLE"/><data android:scheme="sms"/><data android:scheme="smsto"/><data android:scheme="mms"/><data android:scheme="mmsto"/></intent-filter>
+        </activity>
+        <activity android:name=".InCallActivity" android:exported="false" android:showWhenLocked="true" android:turnScreenOn="true" />
+        <service android:name=".CleanInCallService" android:permission="android.permission.BIND_INCALL_SERVICE" android:exported="true">
+            <meta-data android:name="android.telecom.IN_CALL_SERVICE_UI" android:value="true"/>
+            <meta-data android:name="android.telecom.IN_CALL_SERVICE_RINGING" android:value="true"/>
+            <intent-filter><action android:name="android.telecom.InCallService"/></intent-filter>
+        </service>
+        <receiver android:name=".SmsDeliverReceiver" android:permission="android.permission.BROADCAST_SMS" android:exported="true">
+            <intent-filter><action android:name="android.provider.Telephony.SMS_DELIVER"/></intent-filter>
+        </receiver>
+        <receiver android:name=".MmsDeliverReceiver" android:permission="android.permission.BROADCAST_WAP_PUSH" android:exported="true">
+            <intent-filter><action android:name="android.provider.Telephony.WAP_PUSH_DELIVER"/><data android:mimeType="application/vnd.wap.mms-message"/></intent-filter>
+        </receiver>
+        <service android:name=".RespondViaMessageService" android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE" android:exported="true">
+            <intent-filter><action android:name="android.intent.action.RESPOND_VIA_MESSAGE"/><category android:name="android.intent.category.DEFAULT"/><data android:scheme="sms"/><data android:scheme="smsto"/></intent-filter>
+        </service>
+    </application>
+</manifest>
